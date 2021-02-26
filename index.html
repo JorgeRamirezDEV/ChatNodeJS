@@ -18,7 +18,15 @@
   <body>
     <ul id="messages"></ul>
     <form id="form" action="">
+      <input id="nombre" type="text" placeholder="Nombre" autocomplete="off">
       <input id="input" autocomplete="off" /><button>Send</button>
+      <input id="negrita" type="checkbox">Negrita
+      <select name="color" id="color">
+        <option value="red">Rojo</option>
+        <option value="blue">Azúl</option>
+        <option value="green">Verde</option>
+        <option value="yellow">Amarillo</option>
+      </select>
     </form>
   </body>
   <script src="/socket.io/socket.io.js"></script>
@@ -28,17 +36,25 @@
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
+    var nombre = document.getElementById('nombre');
+    var negrita = document.getElementById('negrita');
+    var color = document.getElementById('color');
+
   
     form.addEventListener('submit', function(e) {
       e.preventDefault();
       if (input.value) {
-        socket.emit('chat message', input.value);
-        input.value = '';
+          socket.emit('mensaje', (nombre.value)+": "+input.value);
+          input.value = ''; 
       }
     });
   
-    socket.on('chat message', function(msg) {
+    socket.on('mensajeDesdeServidor', function(msg) {
       var item = document.createElement('li');
+      if(negrita.checked){
+        item.style.fontWeight="bold";
+      }
+      
       item.textContent = msg;
       messages.appendChild(item);
       window.scrollTo(0, document.body.scrollHeight);
